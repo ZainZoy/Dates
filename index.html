@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Intelligence Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1 class="logo">Academic Intelligence</h1>
+                    <button id="helpBtn" class="icon-btn" title="Help">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="header-right">
+                    <button id="themeToggle" class="icon-btn" title="Toggle theme">
+                        <svg id="sunIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg id="moonIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" style="display:none;">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                    <button id="addTaskBtn" class="btn-primary desktop-only">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Add Task
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Dashboard Header -->
+            <div id="dashboardHeader" class="dashboard-header"></div>
+
+            <!-- Desktop Navigation -->
+            <nav class="desktop-nav desktop-only">
+                <button class="nav-btn active" data-view="dashboard">Today's Priority</button>
+                <button class="nav-btn" data-view="pending">All Pending</button>
+                <button class="nav-btn" data-view="subjects">By Subject</button>
+            </nav>
+
+            <!-- Subject Filter (shown when subjects view is active) -->
+            <div id="subjectFilter" class="subject-filter" style="display:none;"></div>
+
+            <!-- Main Grid -->
+            <div class="main-grid">
+                <!-- Task List -->
+                <div class="task-list">
+                    <div id="taskContainer"></div>
+                    <div id="completedSection" class="completed-section" style="display:none;">
+                        <details>
+                            <summary>Completed Tasks (<span id="completedCount">0</span>)</summary>
+                            <div id="completedTasks"></div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="sidebar desktop-only">
+                    <div id="calendarWidget" class="widget"></div>
+                    <div id="progressWidget" class="widget"></div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav mobile-only">
+        <button class="mobile-nav-btn active" data-view="dashboard">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            </svg>
+            <span>Dashboard</span>
+        </button>
+        <button id="addTaskBtnMobile" class="mobile-nav-btn add-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Add</span>
+        </button>
+        <button class="mobile-nav-btn" data-view="pending">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+            </svg>
+            <span>Pending</span>
+        </button>
+        <button class="mobile-nav-btn" data-view="subjects">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <span>Subjects</span>
+        </button>
+    </nav>
+
+    <!-- Task Modal -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Task</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <form id="taskForm">
+                <div class="form-group">
+                    <label>Task Type *</label>
+                    <div class="task-type-grid">
+                        <button type="button" class="task-type-btn active" data-type="homework">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            <span>Homework</span>
+                        </button>
+                        <button type="button" class="task-type-btn" data-type="exam">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <span>Exam</span>
+                        </button>
+                        <button type="button" class="task-type-btn" data-type="quiz">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            <span>Quiz</span>
+                        </button>
+                        <button type="button" class="task-type-btn" data-type="personal">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                            </svg>
+                            <span>Personal</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskTitle">Task Title *</label>
+                    <input type="text" id="taskTitle" required placeholder="e.g., Complete Chapter 5 homework">
+                </div>
+
+                <div class="form-group">
+                    <label for="taskSubject">Subject/Course *</label>
+                    <input type="text" id="taskSubject" required placeholder="e.g., Mathematics" list="subjectList">
+                    <datalist id="subjectList"></datalist>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="taskDate">Due Date *</label>
+                        <input type="date" id="taskDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskTime">Due Time *</label>
+                        <input type="time" id="taskTime" required value="23:59">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Priority Level *</label>
+                    <div class="priority-grid">
+                        <button type="button" class="priority-btn" data-priority="low">Low</button>
+                        <button type="button" class="priority-btn active" data-priority="medium">Medium</button>
+                        <button type="button" class="priority-btn" data-priority="high">High</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="taskNotes">Notes (Optional)</label>
+                    <textarea id="taskNotes" rows="4" placeholder="Add any additional details..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Add Task</button>
+                    <button type="button" class="btn-secondary" id="cancelBtn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-content help-modal">
+            <div class="modal-header">
+                <h2>How to Use</h2>
+                <button class="close-btn" id="closeHelp">&times;</button>
+            </div>
+            <div class="help-content">
+                <section>
+                    <h3>Getting Started</h3>
+                    <ul>
+                        <li>Click "Add Task" to create a new task</li>
+                        <li>Choose task type: Homework, Exam, Quiz, or Personal</li>
+                        <li>Fill in title, subject, due date/time, and priority</li>
+                        <li>Click "Add Task" to save</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Understanding Colors</h3>
+                    <ul>
+                        <li><strong style="color:#EF4444">Red border:</strong> Due within 24 hours (urgent!)</li>
+                        <li><strong style="color:#F97316">Orange border:</strong> Due within 3 days</li>
+                        <li><strong style="color:#3B82F6">Blue border:</strong> Due later than 3 days</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Views</h3>
+                    <ul>
+                        <li><strong>Dashboard:</strong> Shows tasks due within 24 hours</li>
+                        <li><strong>Pending:</strong> All incomplete tasks</li>
+                        <li><strong>Subjects:</strong> Filter by course/subject</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>Tips</h3>
+                    <ul>
+                        <li>Check Dashboard every morning</li>
+                        <li>Use HIGH priority for exams and major projects</li>
+                        <li>Keep subject names consistent</li>
+                        <li>Your data is saved automatically in your browser</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
