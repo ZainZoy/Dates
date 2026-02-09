@@ -66,29 +66,84 @@ function toggleTheme() {
 
 // Event Listeners
 function initializeEventListeners() {
+    console.log('Initializing event listeners...'); // Debug log
+
     // Theme toggle
-    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+    const themeBtn = document.getElementById('themeToggle');
+    if (themeBtn) {
+        themeBtn.addEventListener('click', toggleTheme);
+        console.log('Theme toggle listener added'); // Debug log
+    }
 
     // Add task buttons
-    document.getElementById('addTaskBtn').addEventListener('click', openTaskModal);
-    document.getElementById('addTaskBtnMobile').addEventListener('click', openTaskModal);
+    const addBtn = document.getElementById('addTaskBtn');
+    const addBtnMobile = document.getElementById('addTaskBtnMobile');
+
+    if (addBtn) {
+        addBtn.addEventListener('click', () => {
+            console.log('Add task button clicked'); // Debug log
+            openTaskModal();
+        });
+        console.log('Desktop add button listener added'); // Debug log
+    }
+
+    if (addBtnMobile) {
+        addBtnMobile.addEventListener('click', () => {
+            console.log('Mobile add task button clicked'); // Debug log
+            openTaskModal();
+        });
+        console.log('Mobile add button listener added'); // Debug log
+    }
 
     // Modal controls
-    document.getElementById('closeModal').addEventListener('click', closeTaskModal);
-    document.getElementById('cancelBtn').addEventListener('click', closeTaskModal);
-    document.getElementById('taskForm').addEventListener('submit', handleTaskSubmit);
+    const closeBtn = document.getElementById('closeModal');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const taskForm = document.getElementById('taskForm');
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeTaskModal);
+        console.log('Close button listener added'); // Debug log
+    }
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', closeTaskModal);
+        console.log('Cancel button listener added'); // Debug log
+    }
+
+    if (taskForm) {
+        taskForm.addEventListener('submit', handleTaskSubmit);
+        console.log('Form submit listener added'); // Debug log
+    } else {
+        console.error('Task form not found!'); // Debug log
+    }
 
     // Help modal
-    document.getElementById('helpBtn').addEventListener('click', openHelpModal);
-    document.getElementById('closeHelp').addEventListener('click', closeHelpModal);
+    const helpBtn = document.getElementById('helpBtn');
+    const closeHelp = document.getElementById('closeHelp');
+
+    if (helpBtn) {
+        helpBtn.addEventListener('click', openHelpModal);
+    }
+
+    if (closeHelp) {
+        closeHelp.addEventListener('click', closeHelpModal);
+    }
 
     // Close modals on outside click
-    document.getElementById('taskModal').addEventListener('click', (e) => {
-        if (e.target.id === 'taskModal') closeTaskModal();
-    });
-    document.getElementById('helpModal').addEventListener('click', (e) => {
-        if (e.target.id === 'helpModal') closeHelpModal();
-    });
+    const taskModal = document.getElementById('taskModal');
+    const helpModal = document.getElementById('helpModal');
+
+    if (taskModal) {
+        taskModal.addEventListener('click', (e) => {
+            if (e.target.id === 'taskModal') closeTaskModal();
+        });
+    }
+
+    if (helpModal) {
+        helpModal.addEventListener('click', (e) => {
+            if (e.target.id === 'helpModal') closeHelpModal();
+        });
+    }
 
     // Navigation
     document.querySelectorAll('.nav-btn, .mobile-nav-btn').forEach(btn => {
@@ -96,16 +151,27 @@ function initializeEventListeners() {
             btn.addEventListener('click', () => switchView(btn.dataset.view));
         }
     });
+    console.log('Navigation listeners added'); // Debug log
 
     // Task type selection
     document.querySelectorAll('.task-type-btn').forEach(btn => {
-        btn.addEventListener('click', () => selectTaskType(btn));
+        btn.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent form submission
+            selectTaskType(btn);
+        });
     });
+    console.log('Task type listeners added'); // Debug log
 
     // Priority selection
     document.querySelectorAll('.priority-btn').forEach(btn => {
-        btn.addEventListener('click', () => selectPriority(btn));
+        btn.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent form submission
+            selectPriority(btn);
+        });
     });
+    console.log('Priority listeners added'); // Debug log
+
+    console.log('All event listeners initialized!'); // Debug log
 }
 
 // Modal Functions
@@ -184,15 +250,32 @@ function updateSubjectDatalist() {
 function handleTaskSubmit(e) {
     e.preventDefault();
 
-    const type = document.querySelector('.task-type-btn.active').dataset.type;
-    const priority = document.querySelector('.priority-btn.active').dataset.priority;
+    console.log('Form submitted!'); // Debug log
+
+    const typeBtn = document.querySelector('.task-type-btn.active');
+    const priorityBtn = document.querySelector('.priority-btn.active');
+
+    if (!typeBtn || !priorityBtn) {
+        alert('Please select task type and priority');
+        return;
+    }
+
+    const type = typeBtn.dataset.type;
+    const priority = priorityBtn.dataset.priority;
     const title = document.getElementById('taskTitle').value.trim();
     const subject = document.getElementById('taskSubject').value.trim();
     const date = document.getElementById('taskDate').value;
     const time = document.getElementById('taskTime').value;
     const notes = document.getElementById('taskNotes').value.trim();
 
+    if (!title || !subject || !date || !time) {
+        alert('Please fill in all required fields');
+        return;
+    }
+
     const dueDate = `${date}T${time}:00`;
+
+    console.log('Creating task:', { type, title, subject, dueDate, priority }); // Debug log
 
     if (editingTaskId) {
         // Update existing task
@@ -204,6 +287,7 @@ function handleTaskSubmit(e) {
             task.dueDate = dueDate;
             task.priority = priority;
             task.notes = notes;
+            console.log('Task updated:', task); // Debug log
         }
     } else {
         // Create new task
@@ -219,11 +303,15 @@ function handleTaskSubmit(e) {
             createdAt: new Date().toISOString()
         };
         tasks.push(newTask);
+        console.log('New task created:', newTask); // Debug log
+        console.log('Total tasks:', tasks.length); // Debug log
     }
 
     saveTasks();
+    console.log('Tasks saved to localStorage'); // Debug log
     closeTaskModal();
     render();
+    console.log('UI rendered'); // Debug log
 }
 
 function completeTask(id) {
@@ -455,12 +543,17 @@ function renderTasks() {
     const container = document.getElementById('taskContainer');
     const filtered = getFilteredTasks();
 
+    console.log('Rendering tasks. Total:', tasks.length, 'Filtered:', filtered.length); // Debug log
+    console.log('Current view:', currentView); // Debug log
+    console.log('Filtered tasks:', filtered); // Debug log
+
     if (filtered.length === 0) {
         container.innerHTML = renderEmptyState();
         return;
     }
 
     container.innerHTML = filtered.map(task => renderTaskCard(task)).join('');
+    console.log('Tasks rendered to DOM'); // Debug log
 }
 
 function renderEmptyState() {
